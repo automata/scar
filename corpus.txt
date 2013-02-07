@@ -1,1 +1,5 @@
-corpus/sonata01-1.krn: Piano Sonata No. 1 in F  minor, Op. 2, No. 1 [1793-5]
+corpus/sonata01-1.krn: Piano Sonata No. 1 in F  minor, Op. 2, No. 1 [1793-5] (Allegro)
+corpus/sonata02-1.krn: Piano Sonata No. 2 in A  major, Op. 2, No. 2 [1793-5] (Allegro vivace)
+corpus/sonata03-1.krn: Piano Sonata No. 3 in C  major, Op. 2, No. 3 (Allegro con brio)
+
+source: http://kern.humdrum.org/search?s=t&keyword=beethoven&type=Text
