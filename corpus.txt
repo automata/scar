@@ -1,0 +1,1 @@
+corpus/sonata01-1.krn: Piano Sonata No. 1 in F  minor, Op. 2, No. 1 [1793-5]
