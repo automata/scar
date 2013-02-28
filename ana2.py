@@ -1,9 +1,10 @@
 # coding: utf-8
 
-import music21 as m
+import music21 as m, numpy as n
+from itertools import groupby
 
 # importamos Piano Sonata No. 1 in F  minor, Op. 2, No. 1 [1793-5]
-opus = m.converter.parse('corpus/sonata01-1.krn')
+opus = m.converter.parse('corpus/sonata27-2.krn')
 
 # vozes
 print [voz.id for voz in opus.parts]
@@ -11,7 +12,7 @@ print [voz.id for voz in opus.parts]
 # spine_0 => F
 
 # qual voz queremos?
-voz = opus.getElementById('spine_2')
+voz = opus.getElementById('spine_0')
 
 # quais compassos? começa contar por 0...
 compassos = voz.measures(1, 1000)
@@ -35,13 +36,20 @@ for compasso in compassos.getElementsByClass(m.stream.Measure):
 
 # vamos calcular os intervalos (em semitons) das notas da opus de beethoven
 intervalos_bee = [x-y for x,y in zip(comp, comp[1:])]
+while 1:
+    try:
+        intervalos_bee.remove(0)
+    except:
+        break
+
 
 # vamos procurar por esses intervalos usados por scarlatti no opus de beethoven
 # K12:     -5 +9 -2 -2 -5 | +2 -2 -2 -3 | +0 -1 -2 -4 | +0 -2 -2
 # K135:    +2 +2 -2 -2 +2 +2 -2 -2
 # K6:      +4 +3 +5 +7 -3 -4
 # K13 C22: +1 +4 -7
-intervalos_scar = [[-5, 9, -2, -2, -5, 2, -2, -2, -3, 0, -1, -2, -4, 0, -2, -2],
+#intervalos_scar = [[-5, 9, -2, -2, -5, 2, -2, -2, -3, -1, -2, -4, -2, -2],
+intervalos_scar = [[9, -2, -2, -5],
                    [2, 2, -2, -2, 2, 2, -2, -2],
                    [4, 3, 5, 7, -3, -4],
                    [1, 4, -7]]
@@ -50,15 +58,15 @@ intervalos_scar = [[-5, 9, -2, -2, -5, 2, -2, -2, -3, 0, -1, -2, -4, 0, -2, -2],
 # beethoven
 encontrados = []
 # para cada motivo do scarlatti...
-for int in intervalos_scar:
+for inte in intervalos_scar:
     conta_encontrados = 0
     # vamos procurar em todos os trechos possíveis das notas do beethoven
     for i in xrange(len(intervalos_bee)):
-        trecho = intervalos_bee[i:len(int)+i]
-        if len(trecho) == len(int):
-            print "Procurando %s em %s: %s" % (int, intervalos_bee, trecho)
+        trecho = intervalos_bee[i:len(inte)+i]
+        if len(trecho) == len(inte):
+            print "Procurando %s em %s: %s" % (inte, intervalos_bee, trecho)
             # quando os intervalos baterem, somamos 1 aos encontrados
-            if int == trecho:
+            if list((n.array(inte)>0)*2-1) == list((n.array(trecho)>0)*2-1):
                 conta_encontrados = conta_encontrados + 1
     encontrados.append(conta_encontrados)
 
