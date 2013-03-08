@@ -75,7 +75,7 @@ for inte in intervalos_scar:
             if list((n.array(inte)>0)*2-1) == -1*list((n.array(trecho)>0)*2-1):
             #if inte == [-t for t in trecho]:
                 conta_encontrados = conta_encontrados + 1
-                onde[-1].append(i)
+                onde[-1].append(-i)
     encontrados.append(conta_encontrados)
 
 # portanto, encontrados é uma lista com a quantidade de cada motivo encontrado
