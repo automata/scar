@@ -25,7 +25,6 @@ humdrum://scarlatti/sonatas/L178K258.krn
 humdrum://scarlatti/sonatas/L188K525.krn
 humdrum://scarlatti/sonatas/L198K296.krn
 humdrum://scarlatti/sonatas/L240K369.krn
-humdrum://scarlatti/sonatas/L267K052.krn
 humdrum://scarlatti/sonatas/L301K049.krn
 humdrum://scarlatti/sonatas/L302K372.krn
 humdrum://scarlatti/sonatas/L303K170.krn
