@@ -4,7 +4,7 @@ import music21 as m, numpy as n
 from itertools import groupby
 
 # parametros
-MAX_TOLERANCIA = 5
+MAX_TOLERANCIA = 12
 ARQ_SCARLATTI = 'motscar.txt'
 
 # teste
