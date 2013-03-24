@@ -1,0 +1,5 @@
+#!/bin/bash
+
+git pull
+python ana4.py > saida.txt
+open saida.txt
