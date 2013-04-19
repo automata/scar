@@ -9,9 +9,15 @@ MAX_TOLERANCIA = 4
 ARQ_SCARLATTI = 'motscar.txt'
 
 # lemos os motivos do arquivo de conf
-f = open(ARQ_SCARLATTI, 'r')
-ln = f.readlines()
-intervalos_scar = [[int(x) for x in l[1:-2].split(',')] for l in ln]
+intervalos_scar = []
+ids_scar = []
+for line in open(ARQ_SCARLATTI):
+    if line.strip():
+        partes = line.split(']')
+        mot = partes[0].replace('[', '')
+        ide = partes[1].replace('\n', '')
+        intervalos_scar.append([int(x) for x in mot.split(',')])
+        ids_scar.append(ide)
 
 # corpus que iremos considerar
 compositores = ['beethoven', 'mozart']
@@ -169,9 +175,9 @@ for compositor in compositores:
                 enco.append([intervalos_scar[i], j+1, len(inci)])
                 if len(inci) != 0:
                     if j != 0:
-                        print '\n\nPara motivo %s e tolerância +-%s, encontradas %s incidências.\n\n' % (intervalos_scar[i], j, len(inci))
+                        print '\n\nPara motivo %s %s e tolerância +-%s, encontradas %s incidências.\n\n' % (intervalos_scar[i], ids_scar[i], j, len(inci))
                     else:
-                        print '\n\nPara motivo %s ESTRITO, encontradas %s incidências.\n\n' % (intervalos_scar[i], len(inci))
+                        print '\n\nPara motivo %s %s ESTRITO, encontradas %s incidências.\n\n' % (intervalos_scar[i], ids_scar[i], len(inci))
                     print 'C.ini\tN ini\tC.fim\tN.fim\tM.encontrado'
                     print '-' * 80
                     for incii in inci:
@@ -201,24 +207,24 @@ for compositor in compositores:
 # (mozart)
 #print qtd_notas_ambos
 
-fator = qtd_notas_ambos[0] / qtd_notas_ambos[1]
+fator = float(qtd_notas_ambos[0]) / qtd_notas_ambos[1]
 
 print qtd_notas_ambos[0], qtd_notas_ambos[1], fator
 
-fig = plt.figure(num=None, figsize=(10, 10))
+fig = plt.figure(num=None, figsize=(15, 10))
 plot = fig.add_subplot(111)
 # beethoven
 cores = 'cbgr'
 for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), cos[0][i], color=cores[i], marker='o')
+    plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[0][i]], color=cores[i], marker='o')
 # mozart
 for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), cos[1][i], color=cores[i], marker='+', alpha=.6)
+    plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[1][i]], color=cores[i], marker='+', alpha=.6)
 
 plot.legend(('Beethoven estrito', 'Beethoven $\pm1$', 'Beethoven $\pm2$', 'Beethoven $\pm3$',
              'Mozart estrito', 'Mozart $\pm1$', 'Mozart $\pm2$', 'Mozart $\pm3$'), shadow=True)
 plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(intervalos_scar)
+plot.set_xticklabels(ids_scar)
 plot.set_xlim((0,len(intervalos_scar)-1))
 fig.autofmt_xdate()
 plot.set_title('Incidencias em sonatas de Beethoven e Mozart considerando tolerancias')
@@ -228,7 +234,7 @@ fig.savefig('tolerancias_ambos.png')
 
 #### gráfico beethoven
 
-fig = plt.figure(num=None, figsize=(10, 10))
+fig = plt.figure(num=None, figsize=(15, 10))
 plot = fig.add_subplot(211)
 # beethoven
 cores = 'kbgr'
@@ -236,7 +242,7 @@ for i in xrange(MAX_TOLERANCIA):
     plot.plot(range(len(intervalos_scar)), cos[0][i], color=cores[i], marker='o')
 plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
 plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(intervalos_scar)
+plot.set_xticklabels(ids_scar)
 plot.set_xlim((0,len(intervalos_scar)-1))
 fig.autofmt_xdate()
 plot.set_title('Incidencias em sonatas de Beethoven considerando tolerancias')
@@ -250,7 +256,7 @@ for i in xrange(MAX_TOLERANCIA):
 
 plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
 plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(intervalos_scar)
+plot.set_xticklabels(ids_scar)
 plot.set_xlim((0,len(intervalos_scar)-1))
 fig.autofmt_xdate()
 plot.set_title('Incidencias em sonatas de Mozart considerando tolerancias')
