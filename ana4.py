@@ -3,10 +3,11 @@
 import music21 as m, numpy as n
 from itertools import groupby
 import matplotlib.pyplot as plt
+import pickle as pk
 
 # parametros
 MAX_TOLERANCIA = 4
-ARQ_SCARLATTI = 'motscar.txt'
+ARQ_SCARLATTI = 'motscar_199.txt'
 
 # lemos os motivos do arquivo de conf
 intervalos_scar = []
@@ -24,6 +25,7 @@ compositores = ['beethoven', 'mozart']
 
 cos = []
 qtd_notas_ambos = []
+sonatas_ambos = []
 
 # analisamos cada compositor
 for compositor in compositores:
@@ -32,7 +34,8 @@ for compositor in compositores:
     enco_todos = []
     qtd_notas = 0
     hums = [l.split('/')[-1].replace('\n', '') for l in linhas]
-
+    sonatas = []
+    
     print '!' * 80
     print '!!!!! ANALISANDO %s !!!!!' % compositor
     print '!' * 80
@@ -189,6 +192,11 @@ for compositor in compositores:
         # para motivo x, quantidade de incidencias em enco
         #print enco
         enco_todos.append(enco)
+        sonatas.append([hum,
+                        sum([x[2] for x in enco if x[2] > 0 and x[1] == 1]),
+                        sum([x[2] for x in enco if x[2] > 0 and x[1] == 2]),
+                        sum([x[2] for x in enco if x[2] > 0 and x[1] == 3]),
+                        sum([x[2] for x in enco if x[2] > 0 and x[1] == 4])])
 
     # para gerar gráfico de tolerâncias
     co = []
@@ -203,64 +211,72 @@ for compositor in compositores:
 
     qtd_notas_ambos.append(qtd_notas)
 
+    sonatas_ambos.append(sonatas)
+
 # depois fazer razão com qtd_notas_ambos[0] (beethoven) e qtd_notas_ambos[1]
 # (mozart)
 #print qtd_notas_ambos
 
 fator = float(qtd_notas_ambos[0]) / qtd_notas_ambos[1]
 
-print qtd_notas_ambos[0], qtd_notas_ambos[1], fator
+# guardando dados
+f = open('d1.pkl', 'wb')
+pk.dump((qtd_notas_ambos, fator, cos, intervalos_scar, ids_scar,
+         sonatas_ambos), f)
+f.close()
 
-fig = plt.figure(num=None, figsize=(15, 10))
-plot = fig.add_subplot(111)
-# beethoven
-cores = 'cbgr'
-for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[0][i]], color=cores[i], marker='o')
-# mozart
-for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[1][i]], color=cores[i], marker='+', alpha=.6)
+# print qtd_notas_ambos[0], qtd_notas_ambos[1], fator
 
-plot.legend(('Beethoven estrito', 'Beethoven $\pm1$', 'Beethoven $\pm2$', 'Beethoven $\pm3$',
-             'Mozart estrito', 'Mozart $\pm1$', 'Mozart $\pm2$', 'Mozart $\pm3$'), shadow=True)
-plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(ids_scar)
-plot.set_xlim((0,len(intervalos_scar)-1))
-fig.autofmt_xdate()
-plot.set_title('Incidencias em sonatas de Beethoven e Mozart considerando tolerancias')
-plot.set_xlabel('motivos')
-plot.set_ylabel('incidencias (em todas as sonatas do corpus)')
-fig.savefig('tolerancias_ambos.png')
+# fig = plt.figure(num=None, figsize=(15, 10))
+# plot = fig.add_subplot(111)
+# # beethoven
+# cores = 'cbgr'
+# for i in xrange(MAX_TOLERANCIA):
+#     plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[0][i]], color=cores[i], marker='o')
+# # mozart
+# for i in xrange(MAX_TOLERANCIA):
+#     plot.plot(range(len(intervalos_scar)), [x/fator for x in cos[1][i]], color=cores[i], marker='+', alpha=.6)
 
-#### gráfico beethoven
+# plot.legend(('Beethoven estrito', 'Beethoven $\pm1$', 'Beethoven $\pm2$', 'Beethoven $\pm3$',
+#              'Mozart estrito', 'Mozart $\pm1$', 'Mozart $\pm2$', 'Mozart $\pm3$'), shadow=True)
+# plot.set_xticks(range(len(intervalos_scar)))
+# plot.set_xticklabels(ids_scar)
+# plot.set_xlim((0,len(intervalos_scar)-1))
+# fig.autofmt_xdate()
+# plot.set_title('Incidencias em sonatas de Beethoven e Mozart considerando tolerancias')
+# plot.set_xlabel('motivos')
+# plot.set_ylabel('incidencias (em todas as sonatas do corpus)')
+# fig.savefig('tolerancias_ambos.png')
 
-fig = plt.figure(num=None, figsize=(15, 10))
-plot = fig.add_subplot(211)
-# beethoven
-cores = 'kbgr'
-for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), cos[0][i], color=cores[i], marker='o')
-plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
-plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(ids_scar)
-plot.set_xlim((0,len(intervalos_scar)-1))
-fig.autofmt_xdate()
-plot.set_title('Incidencias em sonatas de Beethoven considerando tolerancias')
-plot.set_xlabel('motivos')
-plot.set_ylabel('incidencias (em todas as sonatas)')
+# #### gráfico beethoven
 
-plot = fig.add_subplot(212)
-# mozart
-for i in xrange(MAX_TOLERANCIA):
-    plot.plot(range(len(intervalos_scar)), cos[1][i], color=cores[i], marker='o')
+# fig = plt.figure(num=None, figsize=(15, 10))
+# plot = fig.add_subplot(211)
+# # beethoven
+# cores = 'kbgr'
+# for i in xrange(MAX_TOLERANCIA):
+#     plot.plot(range(len(intervalos_scar)), cos[0][i], color=cores[i], marker='o')
+# plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
+# plot.set_xticks(range(len(intervalos_scar)))
+# plot.set_xticklabels(ids_scar)
+# plot.set_xlim((0,len(intervalos_scar)-1))
+# fig.autofmt_xdate()
+# plot.set_title('Incidencias em sonatas de Beethoven considerando tolerancias')
+# plot.set_xlabel('motivos')
+# plot.set_ylabel('incidencias (em todas as sonatas)')
 
-plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
-plot.set_xticks(range(len(intervalos_scar)))
-plot.set_xticklabels(ids_scar)
-plot.set_xlim((0,len(intervalos_scar)-1))
-fig.autofmt_xdate()
-plot.set_title('Incidencias em sonatas de Mozart considerando tolerancias')
-plot.set_xlabel('motivos')
-plot.set_ylabel('incidencias (em todas as sonatas)')
-fig.savefig('tolerancias_separados.png')
+# plot = fig.add_subplot(212)
+# # mozart
+# for i in xrange(MAX_TOLERANCIA):
+#     plot.plot(range(len(intervalos_scar)), cos[1][i], color=cores[i], marker='o')
+
+# plot.legend(('Estrito', 'Tolerancia $\pm1$', 'Tolerancia $\pm2$', 'Tolerancia $\pm3$'), shadow=True)
+# plot.set_xticks(range(len(intervalos_scar)))
+# plot.set_xticklabels(ids_scar)
+# plot.set_xlim((0,len(intervalos_scar)-1))
+# fig.autofmt_xdate()
+# plot.set_title('Incidencias em sonatas de Mozart considerando tolerancias')
+# plot.set_xlabel('motivos')
+# plot.set_ylabel('incidencias (em todas as sonatas)')
+# fig.savefig('tolerancias_separados.png')
 

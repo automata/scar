@@ -3,8 +3,9 @@
 import music21 as m, numpy as n
 from itertools import groupby, chain
 import matplotlib.pyplot as plt
+import pickle as pk
 
-compositores = ['beethoven', 'mozart']
+compositores = ['beethoven', 'mozart', 'scarlatti']
 tss = []
 
 for compositor in compositores:
@@ -57,41 +58,45 @@ ind = n.arange(len(keys)) # x das barras
 width = 0.35 # tamanho das barras
 colors = 'bg' # cores usadas (apenas duas, para beethoven e mozart)
 
-# beethoven
-ts = tss[0]
-vals = []
-for k in keys:
-    if k not in ts.keys(): # nao tem essa chave
-        vals.append(0)
-    else: # tem chave
-        vals.append(ts[k])
-rect0 = plot.bar(ind, vals, width, color=colors[0])
+f = open('d2.pkl', 'wb')
+pk.dump(tss, f)
+f.close()
 
-# mozart
-ts = tss[1]
-vals = []
-for k in keys:
-    if k not in ts.keys(): # nao tem essa chave
-        vals.append(0)
-    else: # tem chave
-        vals.append(ts[k])
-rect1 = plot.bar(ind+width, vals, width, color=colors[1])
+# # beethoven
+# ts = tss[0]
+# vals = []
+# for k in keys:
+#     if k not in ts.keys(): # nao tem essa chave
+#         vals.append(0)
+#     else: # tem chave
+#         vals.append(ts[k])
+# rect0 = plot.bar(ind, vals, width, color=colors[0])
 
-plot.set_ylabel('Number of measures')
-plot.set_xlabel('Time signatures')
-plot.set_xticks(ind+width)
-plot.set_xticklabels(tuple(keys))
-plot.legend((rect0[0], rect1[0]),
-            tuple([x.capitalize() for x in compositores]))
+# # mozart
+# ts = tss[1]
+# vals = []
+# for k in keys:
+#     if k not in ts.keys(): # nao tem essa chave
+#         vals.append(0)
+#     else: # tem chave
+#         vals.append(ts[k])
+# rect1 = plot.bar(ind+width, vals, width, color=colors[1])
 
-def autolabel(rects):
-    # attach some text labels
-    for rect in rects:
-        height = rect.get_height()
-        plot.text(rect.get_x()+rect.get_width()/2., 1.05*height, '%d'%int(height),
-                ha='center', va='bottom')
+# plot.set_ylabel('Number of measures')
+# plot.set_xlabel('Time signatures')
+# plot.set_xticks(ind+width)
+# plot.set_xticklabels(tuple(keys))
+# plot.legend((rect0[0], rect1[0]),
+#             tuple([x.capitalize() for x in compositores]))
 
-autolabel(rect0)
-autolabel(rect1)
+# def autolabel(rects):
+#     # attach some text labels
+#     for rect in rects:
+#         height = rect.get_height()
+#         plot.text(rect.get_x()+rect.get_width()/2., 1.05*height, '%d'%int(height),
+#                 ha='center', va='bottom')
 
-fig.savefig('timesignatures_ambos.png')
+# autolabel(rect0)
+# autolabel(rect1)
+
+# fig.savefig('timesignatures_ambos.png')
